@@ -1,0 +1,590 @@
+:root {
+  --bg: #f3f4f6;
+  --sidebar-bg: #ffffff;
+  --primary: #2b6ef6;
+  --text-main: #0f1724;
+  --text-muted: #6b7280;
+  --border: #e6e8ee;
+  --chip-bg: #ffffff;
+  --chip-border: #e8edf7;
+  --card-bg: #ffffff;
+  --muted-card-bg: #fbfbfd;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+  background: var(--bg);
+  color: var(--text-main);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  height: 100vh;
+}
+
+/* Sidebar */
+
+.sidebar {
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--border);
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: var(--primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.app-title {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.user-name {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.sidebar-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sidebar-section-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.sidebar-link {
+  border: none;
+  background: transparent;
+  text-align: left;
+  padding: 6px 10px;
+  font-size: 13px;
+  border-radius: 6px;
+  color: var(--text-main);
+  cursor: pointer;
+}
+
+.sidebar-link:hover {
+  background: #eef2ff;
+}
+
+.sidebar-link.active {
+  background: #e0ebff;
+  color: var(--primary);
+  font-weight: 500;
+}
+
+/* Main area */
+
+.main {
+  display: flex;
+  flex-direction: column;
+  padding: 16px 20px;
+  gap: 12px;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Top bar */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.topbar-title {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.topbar-search input {
+  width: 360px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  font-size: 14px;
+}
+
+.topbar-search input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+/* Filters row */
+
+.filters-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 3px 0;
+  align-items: center;
+  max-height: 64px;
+  margin-bottom: 4px; /* further reduced space between filters and stats */
+}
+
+/* Small reset button (symbol-only) shown at start of filters */
+.reset-btn {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--chip-bg);
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--text-main);
+  margin-right: 6px;
+  padding: 0;
+}
+
+.reset-btn:hover {
+  background: #f7f8fb;
+}
+
+@media (max-width: 880px) {
+  .reset-btn { width: 32px; height: 32px; font-size: 13px; }
+}
+
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 6px;
+  background: var(--chip-bg);
+  border-radius: 18px;
+  border: 1px solid var(--chip-border);
+  font-size: 10px;
+  min-height: 28px;
+}
+
+.filter-chip span {
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.filter-chip select,
+.filter-chip input {
+  border: none;
+  background: transparent;
+  font-size: 13px;
+  color: var(--text-main);
+}
+
+.filter-chip select:focus,
+.filter-chip input:focus {
+  outline: none;
+}
+
+.age-range,
+.date-range {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Make age/date inputs smaller to save horizontal space */
+.age-range input {
+  width: 52px;
+  padding: 4px 6px;
+  font-size: 12px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+}
+
+.date-range input {
+  width: 110px;
+  padding: 4px 6px;
+  font-size: 12px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+}
+
+/* Compact gender select styling inside a filter chip */
+.gender-chip .gender-select {
+  border: none;
+  background: transparent;
+  font-size: 12px;
+  padding: 2px 4px;
+  min-width: 60px;
+  max-width: 90px;
+  appearance: none;
+  -webkit-appearance: none;
+  color: var(--text-main);
+}
+
+.gender-chip { display: inline-flex; align-items: center; gap: 8px; }
+
+/* MultiSelect dropdown styles */
+.multi-dropdown {
+  position: relative;
+}
+
+.multi-dropdown-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  min-width: 120px;
+  max-width: 160px;
+  justify-content: space-between;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.multi-label {
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-right: 8px;
+}
+
+.multi-selected {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  flex: 0 1 auto;
+  margin: 0 6px;
+  max-width: 90px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chip {
+  background: #f3f6fb;
+  border-radius: 10px;
+  padding: 3px 6px;
+  font-size: 11px;
+  color: var(--text-main);
+}
+
+.chip.more {
+  background: rgba(16,24,40,0.06);
+}
+
+.multi-dropdown .caret {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.multi-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(15,23,42,0.08);
+  z-index: 60;
+  width: 180px;
+  max-height: 200px;
+  overflow: auto;
+}
+
+/* Small variant for Region control */
+.multi-dropdown.small .multi-dropdown-toggle {
+  min-width: 72px;
+  max-width: 100px;
+  gap: 4px;
+  padding-right: 6px;
+}
+
+.multi-dropdown.small .multi-label {
+  font-size: 11px;
+}
+
+.multi-dropdown.small .multi-selected {
+  max-width: 64px;
+}
+
+.multi-dropdown.small .chip {
+  font-size: 10px;
+  padding: 2px 4px;
+}
+
+.multi-dropdown.small .multi-dropdown-menu {
+  width: 140px;
+  max-height: 170px;
+}
+
+/* Extra small variant for Tags control */
+.multi-dropdown.xsmall .multi-dropdown-toggle {
+  min-width: 68px;
+  max-width: 96px;
+  gap: 4px;
+  padding-right: 6px;
+}
+
+.multi-dropdown.xsmall .multi-label {
+  font-size: 10px;
+}
+
+.multi-dropdown.xsmall .multi-selected {
+  max-width: 56px;
+}
+
+/* Ensure concise summary chip for compact variants stays compact */
+.multi-dropdown.small .chip,
+.multi-dropdown.xsmall .chip {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  max-width: 100%;
+}
+
+.multi-dropdown.xsmall .chip {
+  font-size: 10px;
+  padding: 2px 4px;
+}
+
+.multi-dropdown.xsmall .multi-dropdown-menu {
+  width: 140px;
+  max-height: 160px;
+}
+
+.menu-list {
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+  gap: 4px;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.menu-item:hover {
+  background: #f7f9fd;
+}
+
+.menu-item input {
+  transform: scale(1);
+}
+
+.menu-item-label {
+  font-size: 13px;
+  color: var(--text-main);
+}
+
+.sort-chip select {
+  min-width: 80px;
+  max-width: 110px;
+  padding: 4px 6px;
+  font-size: 12px;
+}
+
+/* Ensure small controls do not force chip growth */
+.filter-chip input[type="date"],
+.filter-chip input[type="number"],
+.filter-chip select {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Stats cards (slightly reduced height) */
+
+.stats-row {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+  margin-top: 6px; /* reduced spacing from filters */
+}
+
+.stat-card {
+  flex: 1 1 140px;
+  min-width: 110px;
+  max-width: 180px;
+  background: var(--muted-card-bg);
+  border-radius: 10px;
+  border: 1px solid transparent;
+  padding: 6px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-label {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.stat-value {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.1;
+}
+
+/* Table */
+
+.table-wrapper {
+  flex: 1;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  overflow: auto;
+  padding: 6px 8px;
+  min-height: 0;
+}
+
+/* Force the table to fit the container and avoid horizontal scrollbar.
+   Use fixed layout and ellipsis for overflowing cell content. */
+.table-wrapper {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.sales-table {
+  table-layout: fixed;
+}
+
+.sales-table th,
+.sales-table td {
+  min-width: 0; /* allow shrinking in fixed layout */
+  max-width: none;
+}
+
+.sales-table td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Prefer narrower columns for repetitive/short fields */
+.sales-table th:nth-child(1),
+.sales-table td:nth-child(1) { width: 6%; }
+.sales-table th:nth-child(2),
+.sales-table td:nth-child(2) { width: 7%; }
+.sales-table th:nth-child(3),
+.sales-table td:nth-child(3) { width: 7%; }
+.sales-table th:nth-child(4),
+.sales-table td:nth-child(4) { width: 13%; }
+.sales-table th:nth-child(5),
+.sales-table td:nth-child(5) { width: 10%; }
+.sales-table th:nth-child(6),
+.sales-table td:nth-child(6) { width: 5%; }
+.sales-table th:nth-child(7),
+.sales-table td:nth-child(7) { width: 4%; }
+.sales-table th:nth-child(8),
+.sales-table td:nth-child(8) { width: 8%; }
+.sales-table th:nth-child(9),
+.sales-table td:nth-child(9) { width: 4%; }
+.sales-table th:nth-child(10),
+.sales-table td:nth-child(10) { width: 10%; }
+.sales-table th:nth-child(11),
+.sales-table td:nth-child(11) { width: 6%; }
+.sales-table th:nth-child(12),
+.sales-table td:nth-child(12) { width: 7%; }
+.sales-table th:nth-child(13),
+.sales-table td:nth-child(13) { width: 13%; }
+
+.sales-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.sales-table thead {
+  background: #fbfbfd;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.sales-table th,
+.sales-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sales-table th {
+  font-weight: 600;
+  color: var(--text-muted);
+  text-align: left;
+}
+
+.sales-table tbody tr:hover {
+  background: #f7f8ff;
+}
+
+.no-results {
+  margin-top: 16px;
+  padding: 12px;
+  background: #fff6e8;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+/* Pagination */
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.page-btn {
+  padding: 6px 12px;
+  font-size: 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: white;
+  cursor: pointer;
+}
+
+.page-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.page-info {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.loading {
+  margin-top: 20px;
+  font-size: 14px;
+}
