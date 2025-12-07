@@ -125,3 +125,5 @@ GET /api/sales/filters	Fetch distinct dropdown filter values
 | Filters + results can work independently & combined | ✔ Completed |
 
 ---
+OUTPUT:
+![Image](https://github.com/user-attachments/assets/e1ee481d-f9cc-4370-96b0-df3aacf1feb7)
