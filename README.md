@@ -126,4 +126,3 @@ GET /api/sales/filters	Fetch distinct dropdown filter values
 
 ---
 
-![image alt]{https://github.com/Rohit-9321/TruEstate-Rohit/blob/f6def29708307da5fd653faa543331e6c9083644/output/WhatsApp%20Image%202025-12-07%20at%2019.41.02.jpeg}
