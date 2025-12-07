@@ -7,7 +7,7 @@ export default function Sidebar() {
         <div className="avatar-circle">V</div>
         <div>
           <div className="app-title">Vault</div>
-          <div className="user-name">Anurag Yadav</div>
+          <div className="user-name">Rohit Gupta</div>
         </div>
       </div>
 
