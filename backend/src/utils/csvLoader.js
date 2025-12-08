@@ -12,7 +12,7 @@ const __dirname = path.dirname(__filename);
 export async function loadCsvIntoMemory() {
   const csvPath =
     process.env.SALES_CSV_PATH ||
-    path.join(__dirname, "../../data/sales.csv");
+    path.join(__dirname, "../data/sales.csv");
 
   const fileContent = fs.readFileSync(csvPath, "utf-8");
 
@@ -23,7 +23,7 @@ export async function loadCsvIntoMemory() {
   });
 
   SALES_DATA = records.map((r, idx) => ({
-    id: idx + 1, // internal id
+    id: idx + 1,
     transactionId: r["Transaction ID"],
     date: r["Date"],
     customerId: r["Customer ID"],
@@ -58,27 +58,28 @@ export async function loadCsvIntoMemory() {
   const categories = new Set();
   const tagsSet = new Set();
   const paymentMethods = new Set();
-  let minAge = Infinity,
-    maxAge = -Infinity;
-  let minDate = null,
-    maxDate = null;
+  let minAge = Infinity, maxAge = -Infinity;
+  let minDate = null, maxDate = null;
 
   for (const r of SALES_DATA) {
     if (r.customerRegion) regions.add(r.customerRegion);
     if (r.gender) genders.add(r.gender);
     if (r.productCategory) categories.add(r.productCategory);
+
     if (r.tags) {
-      r.tags
-        .split(",")
+      r.tags.split(",")
         .map((t) => t.trim())
         .filter(Boolean)
         .forEach((t) => tagsSet.add(t));
     }
+
     if (r.paymentMethod) paymentMethods.add(r.paymentMethod);
+
     if (!Number.isNaN(r.age)) {
       minAge = Math.min(minAge, r.age);
       maxAge = Math.max(maxAge, r.age);
     }
+
     if (r.date) {
       const d = new Date(r.date);
       if (!minDate || d < minDate) minDate = d;
@@ -86,33 +87,4 @@ export async function loadCsvIntoMemory() {
     }
   }
 
-  FILTER_OPTIONS = {
-    regions: [...regions].sort(),
-    genders: [...genders].sort(),
-    categories: [...categories].sort(),
-    tags: [...tagsSet].sort(),
-    paymentMethods: [...paymentMethods].sort(),
-    ageRange: {
-      min: Number.isFinite(minAge) ? minAge : null,
-      max: Number.isFinite(maxAge) ? maxAge : null
-    },
-    dateRange: {
-      min: minDate ? minDate.toISOString().slice(0, 10) : null,
-      max: maxDate ? maxDate.toISOString().slice(0, 10) : null
-    }
-  };
-
-  console.log(
-    `Loaded ${SALES_DATA.length} sales records from ${path.basename(
-      csvPath
-    )}`
-  );
-}
-
-export function getSalesData() {
-  return SALES_DATA;
-}
-
-export function getFilterOptions() {
-  return FILTER_OPTIONS;
-}
+  FILTER_O_
