@@ -8,11 +8,11 @@
     "dev": "nodemon src/index.js"
   },
   "engines": {
-  "node": ">=18 <=22"
-}
-,
+    "node": ">=18 <=22"
+  },
   "dependencies": {
     "cors": "^2.8.5",
+    "csv-parse": "^6.1.0",
     "csv-parser": "^3.0.0",
     "dotenv": "^16.4.0",
     "express": "^4.19.0",
