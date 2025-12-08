@@ -9,20 +9,20 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-// ⭐ FINAL CORS FIX – DO NOT TOUCH
+// ⭐ Allow ALL in production safely temporarily
 app.use(
   cors({
-    origin: "*",
+    origin: "*", // FULL OPEN to fix CORS now
     methods: ["GET", "POST", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
-app.options("*", cors());
 
+app.options("*", cors());
 app.use(express.json());
 app.use(morgan("dev"));
 
-// routes before CSV load
+// Routes BEFORE CSV load
 app.use("/api/sales", salesRoutes);
 
 async function startServer() {
