@@ -10,13 +10,27 @@ const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export async function loadCsvIntoMemory() {
-  const csvPath =
-    process.env.SALES_CSV_PATH ||
-    path.join(__dirname, "../data/sales.csv");
+  let csvText;
 
-  const fileContent = fs.readFileSync(csvPath, "utf-8");
+  // 1️⃣ PRODUCTION (Railway) - Load from URL
+  if (process.env.SALES_CSV_URL) {
+    console.log("Loading CSV from remote URL:", process.env.SALES_CSV_URL);
+    const response = await fetch(process.env.SALES_CSV_URL);
 
-  const records = parse(fileContent, {
+    if (!response.ok) {
+      throw new Error(`Failed to fetch CSV: ${response.status} ${response.statusText}`);
+    }
+
+    csvText = await response.text();
+
+  } else {
+    // 2️⃣ LOCAL DEV - Load from file
+    const csvPath = process.env.SALES_CSV_PATH || path.join(__dirname, "../data/sales.csv");
+    console.log("Loading CSV from local file:", csvPath);
+    csvText = fs.readFileSync(csvPath, "utf-8");
+  }
+
+  const records = parse(csvText, {
     columns: true,
     skip_empty_lines: true,
     trim: true
@@ -87,4 +101,26 @@ export async function loadCsvIntoMemory() {
     }
   }
 
-  FILTER_O_
+  FILTER_OPTIONS = {
+    regions: [...regions].sort(),
+    genders: [...genders].sort(),
+    categories: [...categories].sort(),
+    tags: [...tagsSet].sort(),
+    paymentMethods: [...paymentMethods].sort(),
+    ageRange: { min: minAge, max: maxAge },
+    dateRange: {
+      min: minDate ? minDate.toISOString().slice(0, 10) : null,
+      max: maxDate ? maxDate.toISOString().slice(0, 10) : null
+    }
+  };
+
+  console.log(`Loaded ${SALES_DATA.length} records from CSV`);
+}
+
+export function getSalesData() {
+  return SALES_DATA;
+}
+
+export function getFilterOptions() {
+  return FILTER_OPTIONS;
+}
