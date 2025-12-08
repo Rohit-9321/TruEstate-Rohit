@@ -2,7 +2,6 @@ import fs from "fs";
 import path from "path";
 import { parse } from "csv-parse/sync";
 import url from "url";
-import https from "https";
 
 let SALES_DATA = [];
 let FILTER_OPTIONS = {};
@@ -10,55 +9,40 @@ let FILTER_OPTIONS = {};
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-function convertGoogleDriveLink(link) {
-  if (link.includes("drive.google.com")) {
-    const idMatch = link.match(/\/d\/(.*?)\//);
-    const id = idMatch ? idMatch[1] : null;
+// 🔥 Simple remote CSV fetcher (works with Dropbox direct link)
+async function fetchCsvFromUrl(fileUrl) {
+  console.log("🌍 Downloading CSV from:", fileUrl);
 
-    if (!id) throw new Error("❌ Invalid Google Drive CSV link");
+  const response = await fetch(fileUrl);
 
-    return `https://drive.google.com/uc?export=download&id=${id}`;
+  if (!response.ok) {
+    throw new Error(`❌ CSV fetch failed: ${response.status} ${response.statusText}`);
   }
-  return link;
-}
 
-async function fetchCsv(url) {
-  return new Promise((resolve, reject) => {
-    https.get(url, (res) => {
-      if (res.statusCode !== 200) {
-        return reject(
-          new Error(`❌ CSV download failed: ${res.statusCode} ${res.statusMessage}`)
-        );
-      }
-
-      let data = "";
-      res.on("data", (chunk) => (data += chunk));
-      res.on("end", () => resolve(data));
-    }).on("error", reject);
-  });
+  return await response.text();
 }
 
 export async function loadCsvIntoMemory() {
   let csvText;
 
+  // 🌎 PRODUCTION (Dropbox URL)
   if (process.env.SALES_CSV_URL) {
-    console.log("🌍 Loading CSV from remote:", process.env.SALES_CSV_URL);
-
-    const directUrl = convertGoogleDriveLink(process.env.SALES_CSV_URL);
-    console.log("🔗 Converted CSV URL:", directUrl);
-
-    csvText = await fetchCsv(directUrl);
+    console.log("🌍 Loading CSV via remote URL...");
+    csvText = await fetchCsvFromUrl(process.env.SALES_CSV_URL);
   } else {
+    // 💻 LOCAL DEV
     const csvPath =
       process.env.SALES_CSV_PATH || path.join(__dirname, "../data/sales.csv");
-    console.log("📁 Loading CSV locally:", csvPath);
+    console.log("📁 Loading local CSV:", csvPath);
+
     csvText = fs.readFileSync(csvPath, "utf8");
   }
 
+  // Parse CSV
   const records = parse(csvText, {
     columns: true,
     skip_empty_lines: true,
-    trim: true,
+    trim: true
   });
 
   SALES_DATA = records.map((r, idx) => ({
@@ -88,12 +72,12 @@ export async function loadCsvIntoMemory() {
     storeId: r["Store ID"],
     storeLocation: r["Store Location"],
     salespersonId: r["Salesperson ID"],
-    employeeName: r["Employee Name"],
+    employeeName: r["Employee Name"]
   }));
 
-  console.log(`📊 Loaded ${SALES_DATA.length} rows`);
+  console.log(`📊 Loaded ${SALES_DATA.length} sales rows`);
 
-  // Build filters
+  // --- Build Filter Options ---
   const regions = new Set();
   const genders = new Set();
   const categories = new Set();
@@ -106,14 +90,13 @@ export async function loadCsvIntoMemory() {
     if (r.customerRegion) regions.add(r.customerRegion);
     if (r.gender) genders.add(r.gender);
     if (r.productCategory) categories.add(r.productCategory);
-
     if (r.tags) {
-      r.tags.split(",")
+      r.tags
+        .split(",")
         .map(t => t.trim())
         .filter(Boolean)
         .forEach(t => tagsSet.add(t));
     }
-
     if (r.paymentMethod) paymentMethods.add(r.paymentMethod);
 
     if (!isNaN(r.age)) {
@@ -141,9 +124,10 @@ export async function loadCsvIntoMemory() {
     }
   };
 
-  console.log("✅ Filter options generated");
+  console.log("✅ Filter options generated.");
 }
 
+// Export Accessors
 export function getSalesData() {
   return SALES_DATA;
 }
