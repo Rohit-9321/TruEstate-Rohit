@@ -12,13 +12,14 @@ const PORT = process.env.PORT || 4000;
 // ⭐ Allow ALL in production safely temporarily
 app.use(
   cors({
-    origin: "*", // FULL OPEN to fix CORS now
+    origin: "*",
     methods: ["GET", "POST", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
 app.options("*", cors());
+
 app.use(express.json());
 app.use(morgan("dev"));
 

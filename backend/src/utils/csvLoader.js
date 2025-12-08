@@ -46,11 +46,13 @@ export async function loadCsvIntoMemory() {
   let csvText;
 
   if (process.env.SALES_CSV_URL) {
-    console.log("🌍 Using remote CSV URL...");
-    csvText = await fetchCsvFromUrl(process.env.SALES_CSV_URL);
+    console.log("🌍 Downloading CSV from →", process.env.SALES_CSV_URL);
+
+    const res = await fetch(process.env.SALES_CSV_URL);
+    csvText = await res.text();
   } else {
-    const csvPath = process.env.SALES_CSV_PATH || path.join(__dirname, "../data/sales.csv");
-    console.log("📁 Loading local CSV:", csvPath);
+    const csvPath = path.join(__dirname, "../data/sales.csv");
+    console.log("📁 Loading local CSV →", csvPath);
     csvText = fs.readFileSync(csvPath, "utf8");
   }
 
