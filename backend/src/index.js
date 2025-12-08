@@ -26,19 +26,21 @@ app.use(morgan("dev"));
 app.use("/api/sales", salesRoutes);
 
 async function startServer() {
+  console.log("📥 Loading CSV...");
   try {
-    console.log("📥 Loading CSV...");
     await loadCsvIntoMemory();
     console.log("📊 CSV Loaded Successfully");
-
-    app.get("/", (_req, res) => {
-      res.json({ status: "ok", message: "Sales API running 🚀" });
-    });
-
-    app.listen(PORT, () => console.log(`🔥 Backend live on ${PORT}`));
   } catch (error) {
-    console.error("❌ Startup Failed:", error);
+    // Don't crash the entire server for a CSV load error in production
+    console.error("❌ CSV load failed — continuing with empty dataset:", error.message || error);
   }
+
+  // Health route
+  app.get("/", (_req, res) => {
+    res.json({ status: "ok", message: "Sales API running 🚀" });
+  });
+
+  app.listen(PORT, () => console.log(`🔥 Backend live on ${PORT}`));
 }
 
 startServer();
