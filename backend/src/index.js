@@ -9,24 +9,20 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-const allowedOrigins = [
-  "https://truestate-rohit.onrender.com",
-  "http://localhost:5173"
-];
-
+// ⭐ FINAL CORS FIX – DO NOT TOUCH
 app.use(
   cors({
-    origin: allowedOrigins,
-    methods: "GET,POST,OPTIONS",
+    origin: "*",
+    methods: ["GET", "POST", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
-
 app.options("*", cors());
+
 app.use(express.json());
 app.use(morgan("dev"));
 
-// 💥 Routes must be ready BEFORE CSV load
+// routes before CSV load
 app.use("/api/sales", salesRoutes);
 
 async function startServer() {
