@@ -10,54 +10,76 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-// ⭐ Allowed Frontend & Backend URLs
+/**
+ * ⭐ Production + Local Allowed Origins
+ */
 const allowedOrigins = [
-  "https://truestate-rohit.onrender.com",                 // frontend prod
-  "https://truestate-rohit-production.up.railway.app",    // backend (railway domain)
-  "http://localhost:5173"                                 // dev
+  "https://truestate-rohit.onrender.com",               // Frontend prod (Render)
+  "https://truestate-rohit-production.up.railway.app", // Backend domain
+  "http://localhost:5173"                              // Local frontend dev
 ];
 
-// ⭐ CORS with whitelist
+/**
+ * ⭐ CORS Setup with Wildcard Matching
+ */
 app.use(
   cors({
     origin: (origin, callback) => {
-      console.log("🔎 Origin:", origin);
+      console.log("🔍 Incoming Origin:", origin);
 
-      // allow Postman / server-to-server
+      // Allow requests with no origin (mobile apps, curl, postman)
       if (!origin) return callback(null, true);
 
-      if (allowedOrigins.includes(origin)) {
+      // Allow if origin starts with (not strict match)
+      if (allowedOrigins.some(url => origin.startsWith(url))) {
+        console.log("✅ CORS Allowed:", origin);
         return callback(null, true);
       }
 
-      console.log("❌ Blocked by CORS:", origin);
-      return callback(new Error("CORS not allowed: " + origin), false);
+      console.log("❌ CORS Blocked:", origin);
+      return callback(new Error("CORS not allowed: " + origin));
     },
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
   })
 );
 
+// ⭐ Required: Handle preflight (OPTIONS) properly
+app.options("*", cors());
+
+/**
+ * ⭐ Middleware
+ */
 app.use(express.json());
 app.use(morgan("dev"));
 
+/**
+ * ⭐ Start Server + Load CSV
+ */
 async function startServer() {
   try {
     await loadCsvIntoMemory();
-    console.log("CSV loaded ✔");
+    console.log("📊 CSV Data Loaded Successfully");
 
+    // API Routes
     app.use("/api/sales", salesRoutes);
 
-    app.get("/", (_req, res) =>
-      res.json({ status: "ok", message: "Sales API running" })
-    );
+    // Health check endpoint
+    app.get("/", (_req, res) => {
+      res.json({
+        status: "ok",
+        message: "Sales API Running 🚀"
+      });
+    });
 
-    app.listen(PORT, () =>
-      console.log(`Backend running 🚀 on PORT ${PORT}`)
-    );
+    // Launch Server
+    app.listen(PORT, () => {
+      console.log(`🚀 Backend Live on PORT ${PORT}`);
+    });
 
   } catch (error) {
-    console.error("Startup failed ❌", error);
+    console.error("❌ Server Startup Failed:", error);
   }
 }
 

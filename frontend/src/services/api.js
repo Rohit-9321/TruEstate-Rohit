@@ -1,10 +1,14 @@
 import axios from "axios";
 
-const client = axios.create({
-  baseURL: import.meta.env.VITE_API_URL + "/api",
-  withCredentials: false,
+const base = import.meta.env.VITE_API_URL
+  ? import.meta.env.VITE_API_URL + "/api"
+  : "http://localhost:4000/api";
+
+export const client = axios.create({
+  baseURL: base,
+  withCredentials: false
 });
- 
+
 export async function fetchFilters() {
   const res = await client.get("/sales/filters");
   return res.data;
