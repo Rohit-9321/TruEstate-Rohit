@@ -2,8 +2,8 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import dotenv from "dotenv";
-import salesRoutes from "./src/routes/salesRoutes.js";
-import { loadCsvIntoMemory } from "./src/utils/csvLoader.js";
+import salesRoutes from "./routes/salesRoutes.js";
+import { loadCsvIntoMemory } from "./utils/csvLoader.js";
 
 dotenv.config();
 
